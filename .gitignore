@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
-.idea/
+.idea/*
+.idea/workspace.xml
 target/
 npm-debug.log
 manifest.yml
@@ -8,3 +9,4 @@ manifest.yml
 web/package-lock.json
 derby.log
 cookies.txt
+workspace.xml
