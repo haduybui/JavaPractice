@@ -1,5 +1,7 @@
 package com.home.duy.practice;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import java.lang.Math;
 
 import java.util.*;
@@ -7,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 
-
+@SpringBootApplication
 public class Main {
     static String helloStringFromMain = "Static String from Main";
     static String inputString = "hello";
@@ -175,9 +177,10 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
         //End of concurrency and multithreading
 
+        RandomExceptionThrower randomExceptionThrower = new RandomExceptionThrower();
+            randomExceptionThrower.randomStringThrower("A String");
     }
 
     public static Map<String, Integer> countCharacter(String input){
