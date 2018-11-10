@@ -1,5 +1,8 @@
 package com.home.duy.practice;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.lang.Math;
 
 import java.util.*;
@@ -178,6 +181,10 @@ public class Main {
 
         //End of concurrency and multithreading
 
+        // START of FILE IO JAVA
+        Main.creatFileWithAbsolutePath("haha.txt");
+        // END OF FILE OJ JAVA
+
     }
 
     public static Map<String, Integer> countCharacter(String input){
@@ -318,6 +325,31 @@ public class Main {
         switch (enumConstant){
             case PRINTTEXT:
 
+        }
+    }
+
+    public static void creatFileWithAbsolutePath(String fileName){
+        String text = "This is the String";
+        String text1 = "1_This is the String";
+        File file = new File("/Users/duybui/IdeaProjects/JavaPractice/src/resources/"+fileName);
+        if(!file.exists()){
+            try{
+                if(file.createNewFile()){
+                    try(PrintStream printStream = new PrintStream(new FileOutputStream(file), true)){
+                        printStream.print(text);
+                    } catch (Exception e) {
+                        System.out.println("There is something wrong, exception: " + e.getMessage());
+                    }
+                }
+            } catch (Exception e){
+                System.out.println("Exception found: " + e.getMessage());
+            }
+        } else {
+            try(PrintStream printStream = new PrintStream(new FileOutputStream(file, true), true)){
+                printStream.append(text1.concat("\n"));
+            } catch (Exception e) {
+                System.out.println("There is something wrong, exception: " + e.getMessage());
+            }
         }
     }
 }
