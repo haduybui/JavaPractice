@@ -331,7 +331,7 @@ public class Main {
     public static void creatFileWithAbsolutePath(String fileName){
         String text = "This is the String";
         String text1 = "1_This is the String";
-        File file = new File("/Users/duybui/IdeaProjects/JavaPractice/src/resources/"+fileName);
+        File file = new File("C:\\Users\\n633023.EMEA\\devlopment\\github\\JavaPractice\\src\\main\\resources\\"+fileName);
         if(!file.exists()){
             try{
                 if(file.createNewFile()){
