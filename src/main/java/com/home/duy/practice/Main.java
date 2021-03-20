@@ -1,7 +1,19 @@
 package com.home.duy.practice;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.Math;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
@@ -11,174 +23,202 @@ import java.util.function.BiConsumer;
 public class Main {
     static String helloStringFromMain = "Static String from Main";
     static String inputString = "hello";
+    private static Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
         Main.run();
     }
 
-    public static void run() {
-        System.out.println("Reaching run() method" +
-                "\nAdding \"Duy Bui\" into 'helloStringFromMain'"
-        );
-        //Processing static contents
-        Main.setHelloString("Duy Bui");
-        System.out.println(getHelloString());
-        System.out.println("printing Hello String from main: " + getHelloString());
+    public static void  run() {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy")
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+                .toFormatter();
 
-        System.out.println("Getting String from ChildOfMain.class");
-        System.out.println(ChildOfMain.getChildOfMainStatisString());
-        System.out.println("Testing lambda functions");
-
-        Main.checkEnum(MyConstants.ADDITION, 2, 3);
-        Main.checkEnum(MyConstants.SUBTRACTION, -10, 5);
-        Main.checkEnum(MyConstants.PRINTTEXT, "SampleText");
-        Main.checkEnum(MyConstants.PRINTTEXT);
-        Main.checkEnum(MyConstants.GORANDOM, 169);
-
-        characterCounter(inputString);
-        characterCounterWithLambda(inputString);
-
-        List<String> listString = new ArrayList<>();
-        listString.forEach((element)->{System.out.println("This is k:" +element);});
-        PrintDefault printDefault = ()->{System.out.println("Haha");};
-
-
-        System.out.println("Playing with Maps: ");
-        Map<String, String> myMap = new HashMap<>();
-        myMap.put("Cat","Felix");
-        myMap.put("Dog","Ruby");
-        myMap.put("Owl","Hedwig");
-
-        System.out.println("Using keySet() with Iterator<T>");
-        Set<String> myKeys = myMap.keySet();
-        Iterator<String> myKeysIterator = myKeys.iterator();
-        while (myKeysIterator.hasNext()){
-            System.out.println(myMap.get(myKeysIterator.next()));
+        logger.info("Hello World");
+        String dateTimeString = "2010-12-30T16:10:26.0";
+        LocalDateTime local = LocalDateTime.parse(dateTimeString);
+        logger.info("local {}", local);
+        try {
+            Date date = new SimpleDateFormat().parse(dateTimeString);
+            logger.info("date {}", date);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-
-        System.out.println("Using Set<Map.Entry<K,V>>");
-        Set<Map.Entry<String, String>> myMapEntrySet = myMap.entrySet();
-        Iterator<Map.Entry<String, String>> myMapEntrySetIterator = myMapEntrySet.iterator();
-        while (myMapEntrySetIterator.hasNext()){
-            Map.Entry<String, String> myMapEntry = myMapEntrySetIterator.next();
-            System.out.println("The key is: " +  myMapEntry.getKey() +" The Value is: "+myMapEntry.getValue());
-        }
-
-        System.out.println("Using forEach()");
-        myMap.forEach((k,v)->System.out.println("Key: "+k+" Value: "+v));
-
-        Map<String, Integer> charCounterMap = countCharacter("Hello");
-        charCounterMap.forEach((k,v)-> System.out.println("char: "+k +" count: "+v));
-
-
-        System.out.println("Trying to practice with Iterator");
-        List<String> myList = new ArrayList<>();
-        myList.add("String1");
-        myList.add("String2");
-        myList.add("String3");
-        myList.add("String4");
-
-        Iterator<String> stringIterator = myList.iterator();
-        while (stringIterator.hasNext()){
-            String elemntOfList = stringIterator.next();
-            System.out.println(elemntOfList);
-        }
-
-        System.out.println("Doing something funny with Array and List to and fro");
-        List<String> myListToArray = new ArrayList<>();
-        myListToArray.add("RandomThing1");
-        myListToArray.add("RandomThing2");
-        myListToArray.add("RandomThing3");
-        myListToArray.add("RandomThing4");
-
-        String[] myArrayThatTakesList = new String[0];
-        myArrayThatTakesList = myListToArray.toArray(myArrayThatTakesList);
-        for(String element : myArrayThatTakesList){
-            System.out.println(element);
-        }
-
-        String[] myStringArray = new String[0];
-
-        String[] notRandomStringArray = {"NotRandomThing1","NotRandomThing2","NotRandomThing3"};
-
-        List<String> notRandomListString = Arrays.asList(notRandomStringArray);
-        notRandomListString.forEach((v)->{System.out.println(v);});
-
-        //Testing Nested (static) class, Inner class and Anonymous class
-        StringUtil stringUtil = new StringUtil();
-        StringUtil.NestedStringUtil nestedStringUtil = new StringUtil.NestedStringUtil();
-        StringUtil.InnerStringUtil innerStringUtil = (new StringUtil()).new InnerStringUtil();
-
-        Map<String, String> myMapWithLambda = new HashMap<>();
-        myMapWithLambda.put("a","haha");
-        myMapWithLambda.put("b","hbhb");
-        myMapWithLambda.put("c","hchc");
-        myMapWithLambda.put("d","hdhd");
-
-        myMapWithLambda.replaceAll((k,v) -> v.toUpperCase());
-        myMapWithLambda.forEach((k,v)->System.out.println(k+"|"+v));
-
-
-        //Start of concurrency and multithreading
-
-        //Using runnable and thread to create concurrency
-        MyRunnableClass myRunnableClass = new MyRunnableClass();
-        Thread[] threads = new Thread[3];
-
-        for (int i = 0; i < 3; i++){
-            threads[i] = new Thread(myRunnableClass);
-            threads[i].start();
-        }
-
-        for(Thread thread : threads){
-            try{
-                //Block the main thread to stop before the other thread finishes
-                thread.join();
-            } catch (InterruptedException e){
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        //Using runnable and thread to create concurrency
-
-
-        //Using ExecutorService, Callable<V> and Future<V>
-        System.out.println("\n\n\n\tStarting to used ExecutorService, Executors, Callable and Future");
-
-        ExecutorService es = Executors.newFixedThreadPool(5);
-        Callable<Integer> myCallableClass = new MyCallableClass();
-        Future<Integer>[] futures = new Future[5];
-
-        for(int i = 0; i< 5; i++){
-                futures[i] = es.submit(myCallableClass);
-//            es.submit(myRunnableClass);
-        }
-
-        try{
-            es.shutdown();
-            es.awaitTermination(60, TimeUnit.SECONDS);
-        } catch (Exception e){
-            Throwable throwableExc = e.getCause();
-            System.out.println("Exception caught: "+throwableExc.getMessage());
-        }
-
-        for ( Future<Integer> future : futures) {
-            try {
-                int value = future.get();
-                System.out.println("From future element: " + value);
-            } catch (ExecutionException e) {
-                Throwable throwableExc = e.getCause();
-                System.out.println(throwableExc.getMessage());
-                throwableExc.printStackTrace();
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
-        //End of concurrency and multithreading
-
     }
+
+    public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        logger.info("ZoneId.systemDefault() {}", ZoneId.systemDefault());
+        return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+
+
+//    public static void run() {
+//        System.out.println("Reaching run() method" +
+//                "\nAdding \"Duy Bui\" into 'helloStringFromMain'"
+//        );
+//        //Processing static contents
+//        Main.setHelloString("Duy Bui");
+//        System.out.println(getHelloString());
+//        System.out.println("printing Hello String from main: " + getHelloString());
+//
+//        System.out.println("Getting String from ChildOfMain.class");
+//        System.out.println(ChildOfMain.getChildOfMainStatisString());
+//        System.out.println("Testing lambda functions");
+//
+//        Main.checkEnum(MyConstants.ADDITION, 2, 3);
+//        Main.checkEnum(MyConstants.SUBTRACTION, -10, 5);
+//        Main.checkEnum(MyConstants.PRINTTEXT, "SampleText");
+//        Main.checkEnum(MyConstants.PRINTTEXT);
+//        Main.checkEnum(MyConstants.GORANDOM, 169);
+//
+//        characterCounter(inputString);
+//        characterCounterWithLambda(inputString);
+//
+//        List<String> listString = new ArrayList<>();
+//        listString.forEach((element)->{System.out.println("This is k:" +element);});
+//        PrintDefault printDefault = ()->{System.out.println("Haha");};
+//
+//
+//        System.out.println("Playing with Maps: ");
+//        Map<String, String> myMap = new HashMap<>();
+//        myMap.put("Cat","Felix");
+//        myMap.put("Dog","Ruby");
+//        myMap.put("Owl","Hedwig");
+//
+//        System.out.println("Using keySet() with Iterator<T>");
+//        Set<String> myKeys = myMap.keySet();
+//        Iterator<String> myKeysIterator = myKeys.iterator();
+//        while (myKeysIterator.hasNext()){
+//            System.out.println(myMap.get(myKeysIterator.next()));
+//        }
+//
+//        System.out.println("Using Set<Map.Entry<K,V>>");
+//        Set<Map.Entry<String, String>> myMapEntrySet = myMap.entrySet();
+//        Iterator<Map.Entry<String, String>> myMapEntrySetIterator = myMapEntrySet.iterator();
+//        while (myMapEntrySetIterator.hasNext()){
+//            Map.Entry<String, String> myMapEntry = myMapEntrySetIterator.next();
+//            System.out.println("The key is: " +  myMapEntry.getKey() +" The Value is: "+myMapEntry.getValue());
+//        }
+//
+//        System.out.println("Using forEach()");
+//        myMap.forEach((k,v)->System.out.println("Key: "+k+" Value: "+v));
+//
+//        Map<String, Integer> charCounterMap = countCharacter("Hello");
+//        charCounterMap.forEach((k,v)-> System.out.println("char: "+k +" count: "+v));
+//
+//
+//        System.out.println("Trying to practice with Iterator");
+//        List<String> myList = new ArrayList<>();
+//        myList.add("String1");
+//        myList.add("String2");
+//        myList.add("String3");
+//        myList.add("String4");
+//
+//        Iterator<String> stringIterator = myList.iterator();
+//        while (stringIterator.hasNext()){
+//            String elemntOfList = stringIterator.next();
+//            System.out.println(elemntOfList);
+//        }
+//
+//        System.out.println("Doing something funny with Array and List to and fro");
+//        List<String> myListToArray = new ArrayList<>();
+//        myListToArray.add("RandomThing1");
+//        myListToArray.add("RandomThing2");
+//        myListToArray.add("RandomThing3");
+//        myListToArray.add("RandomThing4");
+//
+//        String[] myArrayThatTakesList = new String[0];
+//        myArrayThatTakesList = myListToArray.toArray(myArrayThatTakesList);
+//        for(String element : myArrayThatTakesList){
+//            System.out.println(element);
+//        }
+//
+//        String[] myStringArray = new String[0];
+//
+//        String[] notRandomStringArray = {"NotRandomThing1","NotRandomThing2","NotRandomThing3"};
+//
+//        List<String> notRandomListString = Arrays.asList(notRandomStringArray);
+//        notRandomListString.forEach((v)->{System.out.println(v);});
+//
+//        //Testing Nested (static) class, Inner class and Anonymous class
+//        StringUtil stringUtil = new StringUtil();
+//        StringUtil.NestedStringUtil nestedStringUtil = new StringUtil.NestedStringUtil();
+//        StringUtil.InnerStringUtil innerStringUtil = (new StringUtil()).new InnerStringUtil();
+//
+//        Map<String, String> myMapWithLambda = new HashMap<>();
+//        myMapWithLambda.put("a","haha");
+//        myMapWithLambda.put("b","hbhb");
+//        myMapWithLambda.put("c","hchc");
+//        myMapWithLambda.put("d","hdhd");
+//
+//        myMapWithLambda.replaceAll((k,v) -> v.toUpperCase());
+//        myMapWithLambda.forEach((k,v)->System.out.println(k+"|"+v));
+//
+//
+//        //Start of concurrency and multithreading
+//
+//        //Using runnable and thread to create concurrency
+//        MyRunnableClass myRunnableClass = new MyRunnableClass();
+//        Thread[] threads = new Thread[3];
+//
+//        for (int i = 0; i < 3; i++){
+//            threads[i] = new Thread(myRunnableClass);
+//            threads[i].start();
+//        }
+//
+//        for(Thread thread : threads){
+//            try{
+//                //Block the main thread to stop before the other thread finishes
+//                thread.join();
+//            } catch (InterruptedException e){
+//                System.out.println(e.getMessage());
+//                e.printStackTrace();
+//            }
+//        }
+//        //Using runnable and thread to create concurrency
+//
+//
+//        //Using ExecutorService, Callable<V> and Future<V>
+//        System.out.println("\n\n\n\tStarting to used ExecutorService, Executors, Callable and Future");
+//
+//        ExecutorService es = Executors.newFixedThreadPool(5);
+//        Callable<Integer> myCallableClass = new MyCallableClass();
+//        Future<Integer>[] futures = new Future[5];
+//
+//        for(int i = 0; i< 5; i++){
+//                futures[i] = es.submit(myCallableClass);
+////            es.submit(myRunnableClass);
+//        }
+//
+//        try{
+//            es.shutdown();
+//            es.awaitTermination(60, TimeUnit.SECONDS);
+//        } catch (Exception e){
+//            Throwable throwableExc = e.getCause();
+//            System.out.println("Exception caught: "+throwableExc.getMessage());
+//        }
+//
+//        for ( Future<Integer> future : futures) {
+//            try {
+//                int value = future.get();
+//                System.out.println("From future element: " + value);
+//            } catch (ExecutionException e) {
+//                Throwable throwableExc = e.getCause();
+//                System.out.println(throwableExc.getMessage());
+//                throwableExc.printStackTrace();
+//            } catch (InterruptedException e) {
+//                System.out.println(e.getMessage());
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        //End of concurrency and multithreading
+//
+//    }
+
 
     public static Map<String, Integer> countCharacter(String input){
         Map<String, Integer> charMap = new TreeMap<>();
