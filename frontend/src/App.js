@@ -1,8 +1,7 @@
 import './App.css';
 
-import React from "react";
+import React, {Fragment} from "react";
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link,
@@ -10,9 +9,11 @@ import {
     useParams
 } from "react-router-dom";
 
+import AppHeader from './app/appBar/AppHeader';
+import Blog from "./app/blog/Blog";
 
 function Home() {
-    return <h2>Home</h2>;
+    return <h2>Welcome to Duy's Page</h2>;
 }
 
 function About() {
@@ -61,7 +62,7 @@ function Topic() {
 
 function App() {
     return (
-        <div >
+        <Fragment>
             {/*<header className="App-header">*/}
             {/*    <img src={logo} className="App-logo" alt="logo"/>*/}
             {/*    <p>*/}
@@ -77,34 +78,25 @@ function App() {
             {/*    </a>*/}
             {/*</header>*/}
 
-            <Router>
-                <div>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/about">About</Link>
-                        </li>
-                        <li>
-                            <Link to="/topics">Topics</Link>
-                        </li>
-                    </ul>
 
-                    <Switch>
-                        <Route path="/about">
-                            <About/>
-                        </Route>
-                        <Route path="/topics">
-                            <Topics/>
-                        </Route>
-                        <Route path="/">
-                            <Home/>
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        </div>
+           <AppHeader />
+            <div>
+                <Switch>
+                    <Route path="/about">
+                        <About/>
+                    </Route>
+                    <Route path="/topics">
+                        <Topics/>
+                    </Route>
+                    <Route path="/home">
+                        <Home/>
+                    </Route>
+                    <Route path="/blog">
+                        <Blog/>
+                    </Route>
+                </Switch>
+            </div>
+        </Fragment >
     );
 }
 
